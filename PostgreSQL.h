@@ -5,42 +5,34 @@
 #ifndef INTEGRATION_POSTGRESS_H
 #define INTEGRATION_POSTGRESS_H
 
-#include <libpq-fe.h>
 #include <string>
 #include <map>
 #include <vector>
 #include <iostream>
-#include "../Types/Value.h"
+#include <TigreFramework/Database/Database.h>
+#include <TigreFramework/Database/Line.h>
+#include <thread>
+#include <TigreFramework/Database/Value.h>
 
 using namespace std;
 
-#define Line map<string, string>
+struct pg_result;
+struct pg_conn;
 
-class Result {
-
-    public:
-        Result(PGresult *pResult);
-        ~Result();
-        std::vector<Line> fetchAll();
-        Line fetch();
-        int size();
-
-    private:
-        PGresult *pResult;
-        int location = 0;
-};
-
-class PostgreSQL {
+class PostgreSQL: public Database {
 
     public:
         PostgreSQL();
-        ~PostgreSQL();
-        Result *execute(std::string);
 
-        static std::string prepare(std::string command, std::vector<Value> values);
+        static Database* connection();
+        Lines execute(std::string sql, std::vector<Value> values) override;
+        Lines execute(std::string sql) override;
 
-    private:
-        PGconn *conn;
+    protected:
+        pg_conn *conn;
+
+        static PostgreSQL * singleton;
+        static std::map<std::thread::id, PostgreSQL*> pool;
 
 };
 
