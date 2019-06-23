@@ -5,14 +5,18 @@
 #ifndef INTEGRATION_POSTGRESS_H
 #define INTEGRATION_POSTGRESS_H
 
-#include <libpq-fe.h>
 #include <string>
 #include <map>
 #include <vector>
 #include <iostream>
-#include "../Types/Value.h"
+#include <TigreFramework/Database/Value.h>
 
 using namespace std;
+
+#ifndef LIBPQ_FE_H
+typedef struct PGresult;
+typedef struct PGconn;
+#endif
 
 #define Line map<string, string>
 

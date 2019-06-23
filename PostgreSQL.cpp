@@ -2,6 +2,7 @@
 // Created by pedro on 29/11/17.
 //
 
+#include <postgresql/libpq-fe.h>
 #include "PostgreSQL.h"
 
 PostgreSQL::PostgreSQL() {
