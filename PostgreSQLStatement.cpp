@@ -23,7 +23,7 @@ bool PostgreSQLStatement::execute(std::map<string, Value> params) {
     std::string prepared_sql;
 
     if(params.empty()) {
-        prepared_sql = this->sql.c_str();
+        prepared_sql = this->sql;
     } else {
         Tigre::String sql = this->sql;
         for(const auto & param : params) {
