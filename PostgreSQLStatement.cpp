@@ -1,7 +1,3 @@
-//
-// Created by pedrosoares on 6/23/19.
-//
-
 #include <libpq-fe.h>
 #include <TigreFramework/PostgreSQLConnector/Exceptions/PostgreSQLException.h>
 #include <TigreFramework/String/String.h>

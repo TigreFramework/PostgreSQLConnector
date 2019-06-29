@@ -4,9 +4,12 @@ project(TigreFramework)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 set(SYSTEM_FILES
-    PostgreSQL.h
-    PostgreSQL.cpp
-        PostgreSQLServiceProvider.cpp PostgreSQLServiceProvider.h PostgreSQLConfiguration.cpp PostgreSQLConfiguration.h PostgreSQLDataObject.cpp PostgreSQLDataObject.h Exceptions/PostgreSQLException.cpp Exceptions/PostgreSQLException.h PostgreSQLStatement.cpp PostgreSQLStatement.h)
+        PostgreSQLServiceProvider.cpp PostgreSQLServiceProvider.h
+        PostgreSQLConfiguration.cpp PostgreSQLConfiguration.h
+        PostgreSQLDataObject.cpp PostgreSQLDataObject.h
+        Exceptions/PostgreSQLException.cpp Exceptions/PostgreSQLException.h
+        PostgreSQLStatement.cpp PostgreSQLStatement.h
+        )
 
 set(PostgreSQL_TYPE_INCLUDE_DIR /usr/include/postgresql/)
 

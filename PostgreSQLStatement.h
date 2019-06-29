@@ -1,7 +1,3 @@
-//
-// Created by pedrosoares on 6/23/19.
-//
-
 #ifndef TIGREFRAMEWORK_POSTGRESQLSTATEMENT_H
 #define TIGREFRAMEWORK_POSTGRESQLSTATEMENT_H
 
