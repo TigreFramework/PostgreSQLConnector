@@ -4,5 +4,4 @@
 
 void PostgreSQLServiceProvider::boot() {
     Configuration::set("Database.driver.pgsql", new PostgreSQLConfiguration());
-    //Configuration::set("Database.driver.", new PostgreSQL());
 }

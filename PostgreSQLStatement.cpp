@@ -19,7 +19,7 @@ bool PostgreSQLStatement::execute() {
 }
 
 bool PostgreSQLStatement::execute(std::map<string, Value> params) {
-    const char * prepared_sql;
+    std::string prepared_sql;
 
     if(params.empty()) {
         prepared_sql = this->sql.c_str();
@@ -41,7 +41,7 @@ bool PostgreSQLStatement::execute(std::map<string, Value> params) {
             }
             sql.replace(param.first, value);
         }
-        prepared_sql = sql.getValue().c_str();
+        prepared_sql = sql.getValue();
     }
 
     return this->execute(prepared_sql);
