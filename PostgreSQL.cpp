@@ -1,12 +1,8 @@
-//
-// Created by pedro on 29/11/17.
-//
-
 #include <postgresql/libpq-fe.h>
 #include "PostgreSQL.h"
 
 PostgreSQL::PostgreSQL() {
-    const char *conninfo = "host=localhost port=5432 dbname=Api user=pgsql password=1234";
+    const char *conninfo = "host=postgres-database port=5432 dbname=postgres user=postgres password=1234";
     this->conn = PQconnectdb(conninfo);
 }
 
@@ -14,15 +10,20 @@ PostgreSQL::~PostgreSQL() {
     PQfinish(conn);
 }
 
-Result *PostgreSQL::execute(string sql) {
+Lines PostgreSQL::execute(std::string sql, std::vector<Value> values) {
+    return this->execute(sql);
+}
+
+Lines PostgreSQL::execute(string sql) {
     PGresult *res = PQexec(conn, sql.c_str());
     if (PQresultStatus(res) != PGRES_TUPLES_OK) {
-        fprintf(stderr, "SELECT FROM failed: %s", PQerrorMessage(conn));
+        auto message = std::string("\"PostgreSQL::execute\" failed: ") + PQerrorMessage(conn);
         PQclear(res);
         PQfinish(conn);
-        throw new exception(); // PQerrorMessage(conn)
+        throw message;
+        //throw exception();
     }
-    return new Result(res);
+    return (new Result(res))->fetchAll();
 }
 
 Result::Result(PGresult *pResult) {
@@ -43,7 +44,9 @@ vector<Line> Result::fetchAll() {
     for (int i = 0; i < PQntuples(pResult); i++) {
         Line line;
         for (int j = 0; j < nFields; j++) {
-            line[PQfname(pResult, j)] = PQgetvalue(pResult, i, j);
+            auto string_val = std::string(PQgetvalue(pResult, i, j));
+            auto val = Value(string_val);
+            line[PQfname(pResult, j)] = val;
         }
         result.push_back(line);
     }
@@ -57,7 +60,9 @@ Line Result::fetch() {
     Line line;
     auto nFields = PQnfields(pResult);
     for (int j = 0; j < nFields; ++j) {
-        line[PQfname(pResult, j)] = PQgetvalue(pResult, this->location, j);
+        auto string_val = std::string(PQgetvalue(pResult, this->location, j));
+        auto val = Value(string_val);
+        line[PQfname(pResult, j)] = val;
     }
     this->location++;
     return line;

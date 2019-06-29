@@ -1,7 +1,3 @@
-//
-// Created by pedro on 29/11/17.
-//
-
 #ifndef INTEGRATION_POSTGRESS_H
 #define INTEGRATION_POSTGRESS_H
 
@@ -10,6 +6,7 @@
 #include <vector>
 #include <iostream>
 #include <TigreFramework/Database/Value.h>
+#include <TigreFramework/Database/Database.h>
 
 using namespace std;
 
@@ -18,7 +15,7 @@ typedef struct PGresult;
 typedef struct PGconn;
 #endif
 
-#define Line map<string, string>
+/*#define Line map<string, string>*/
 
 class Result {
 
@@ -34,12 +31,13 @@ class Result {
         int location = 0;
 };
 
-class PostgreSQL {
+class PostgreSQL : public Database {
 
     public:
         PostgreSQL();
         ~PostgreSQL();
-        Result *execute(std::string);
+        Lines execute(std::string);
+        Lines execute(std::string sql, std::vector<Value> values);
 
         static std::string prepare(std::string command, std::vector<Value> values);
 
