@@ -11,8 +11,7 @@ PostgreSQLStatement::PostgreSQLStatement(PGconn *connection, std::string sql) : 
 }
 
 PostgreSQLStatement::~PostgreSQLStatement() {
-    PQclear(res);
-    this->res = nullptr;
+    this->closeCursor();
 }
 
 bool PostgreSQLStatement::execute() {
@@ -146,4 +145,15 @@ int PostgreSQLStatement::errorCode() {
 
 int PostgreSQLStatement::columnCount() {
     return PQnfields(this->res);
+}
+
+void PostgreSQLStatement::closeCursor() {
+    if(this->res != nullptr) {
+        PQclear(this->res);
+        this->res = nullptr;
+    }
+}
+
+std::string PostgreSQLStatement::debugDumpParams() {
+    return this->sql;
 }
