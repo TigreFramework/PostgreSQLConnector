@@ -38,7 +38,12 @@ void PostgreSQLDataObject::errorInfo() {}
 /**
  * Executa uma instrução SQL e retornar o número de linhas afetadas
  */
-void PostgreSQLDataObject::exec() {}
+int PostgreSQLDataObject::exec(std::string sql) {
+    auto psqls = new PostgreSQLStatement(this->connection, sql);
+    this->statement.push_back(psqls);
+    psqls->execute();
+    return psqls->rowCount();
+}
 /**
  * Recuperar um atributo da conexão com o banco de dados
  */

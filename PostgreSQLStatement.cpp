@@ -2,6 +2,7 @@
 #include <TigreFramework/PostgreSQLConnector/Exceptions/PostgreSQLException.h>
 #include <TigreFramework/String/String.h>
 #include <TigreFramework/Database/Line.h>
+#include <TigreFramework/Types/Math.h>
 #include "PostgreSQLStatement.h"
 
 PostgreSQLStatement::PostgreSQLStatement(PGconn *connection, std::string sql) : DataObjectStatement() {
@@ -81,8 +82,11 @@ bool PostgreSQLStatement::execute(std::string sql) {
         this->res = nullptr;
     }
     this->res = PQexec(this->connection, sql.c_str());
-    if (PQresultStatus(this->res) != PGRES_TUPLES_OK) {
-        auto message = std::string("\"PostgreSQLStatement::execute\" failed: ") + PQerrorMessage(this->connection);
+    int res = PQresultStatus(this->res);
+    if (res != PGRES_TUPLES_OK && res != PGRES_COMMAND_OK) {
+        auto error = PQerrorMessage(this->connection);
+        auto resError = PQresultErrorMessage(this->res);
+        auto message = std::string("\"PostgreSQLStatement::execute\" failed: ") + error + " | " + resError;
 
         PQclear(this->res);
         this->res = nullptr;
@@ -93,20 +97,39 @@ bool PostgreSQLStatement::execute(std::string sql) {
     return true;
 }
 
+Line PostgreSQLStatement::fetch() {
+    if(++this->current < PQntuples(this->res)) {
+        Line line;
+        auto nFields = PQnfields(this->res);
+        for (int j = 0; j < nFields; j++) {
+            auto string_val = std::string(PQgetvalue(this->res, this->current, j));
+            auto val = Value(string_val);
+            line[PQfname(this->res, j)] = val;
+        }
+        return line;
+    }
+    return {};
+}
+
 vector<Line> PostgreSQLStatement::fetchAll() {
     if(this->res == nullptr){
         throw PostgreSQLException("No Statement Executed!");
     }
     vector<Line> result;
-    auto nFields = PQnfields(this->res);
-    for (int i = 0; i < PQntuples(this->res); i++) {
-        Line line;
-        for (int j = 0; j < nFields; j++) {
-            auto string_val = std::string(PQgetvalue(this->res, i, j));
-            auto val = Value(string_val);
-            line[PQfname(this->res, j)] = val;
+    Line line;
+    do {
+        line = this->fetch();
+        if(!line.empty()) {
+            result.push_back(line);
         }
-        result.push_back(line);
-    }
+    } while(!line.empty());
     return result;
+}
+
+int PostgreSQLStatement::rowCount() {
+    auto count = std::string(PQcmdTuples(this->res));
+    if(!count.empty()) {
+        return Math::toInt(count);
+    }
+    return PQntuples(this->res);
 }

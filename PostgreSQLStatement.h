@@ -65,7 +65,7 @@ public:
     /**
      * Fetches the next row from a result set
      */
-    void fetch() override { }
+    Line fetch() override ;
     /**
      * Returns an array containing all of the result set rows
      */
@@ -93,7 +93,7 @@ public:
     /**
      * Returns the number of rows affected by the last SQL statement
      */
-    void rowCount() override { }
+    int rowCount() override ;
     /**
      * Define um atributo na instrução
      */
@@ -107,6 +107,7 @@ private:
     PGconn * connection;
     PGresult * res = nullptr;
     string sql;
+    int current = -1;
 
     bool execute(std::string sql);
 

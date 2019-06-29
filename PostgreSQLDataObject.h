@@ -44,7 +44,7 @@ public:
     /**
      * Executa uma instrução SQL e retornar o número de linhas afetadas
      */
-    void exec();
+    int exec(std::string sql);
     /**
      * Recuperar um atributo da conexão com o banco de dados
      */
