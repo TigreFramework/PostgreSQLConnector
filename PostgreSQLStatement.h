@@ -29,7 +29,7 @@ public:
     /**
      * Returns the number of columns in the result set
      */
-    void columnCount() override { }
+    int columnCount() override ;
     /**
      * Dump an SQL prepared command
      */
@@ -37,11 +37,11 @@ public:
     /**
      * Fetch the SQLSTATE associated with the last operation on the statement handle
      */
-    void errorCode() override { }
+    int errorCode() override ;
     /**
      * Fetch extended error information associated with the last operation on the statement handle
      */
-    void errorInfo() override { }
+    std::string errorInfo() override ;
     /**
      * Executes a prepared statement
      */
@@ -108,6 +108,8 @@ private:
     PGresult * res = nullptr;
     string sql;
     int current = -1;
+
+    int status = -1;
 
     bool execute(std::string sql);
 

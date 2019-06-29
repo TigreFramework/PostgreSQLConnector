@@ -82,8 +82,8 @@ bool PostgreSQLStatement::execute(std::string sql) {
         this->res = nullptr;
     }
     this->res = PQexec(this->connection, sql.c_str());
-    int res = PQresultStatus(this->res);
-    if (res != PGRES_TUPLES_OK && res != PGRES_COMMAND_OK) {
+    this->status = PQresultStatus(this->res);
+    if (this->status != PGRES_TUPLES_OK && this->status != PGRES_COMMAND_OK) {
         auto error = PQerrorMessage(this->connection);
         auto resError = PQresultErrorMessage(this->res);
         auto message = std::string("\"PostgreSQLStatement::execute\" failed: ") + error + " | " + resError;
@@ -132,4 +132,18 @@ int PostgreSQLStatement::rowCount() {
         return Math::toInt(count);
     }
     return PQntuples(this->res);
+}
+
+std::string PostgreSQLStatement::errorInfo() {
+    auto error = PQerrorMessage(this->connection);
+    auto resError = PQresultErrorMessage(this->res);
+    return error ?: resError;
+}
+
+int PostgreSQLStatement::errorCode() {
+    return this->status;
+}
+
+int PostgreSQLStatement::columnCount() {
+    return PQnfields(this->res);
 }
