@@ -57,7 +57,13 @@ Line PostgreSQLStatement::fetch() {
         for (int j = 0; j < nFields; j++) {
             auto string_val = std::string(PQgetvalue(this->res, this->current, j));
             auto val = Value(string_val);
-            line[PQfname(this->res, j)] = val;
+            std::string column_name = PQfname(this->res, j);
+
+            if(this->bindColumnByIndex.find(col) != this->bindColumnByIndex.end()) {
+                line[column_name] = this->bindColumnByIndex[col];
+            }
+
+            line[column_name] = val;
         }
         return line;
     }
@@ -122,4 +128,8 @@ void PostgreSQLStatement::bindValue(std::string name, Value value) {
 
 std::string PostgreSQLStatement::quote(const std::string &value) {
     return "'" + value + "'";
+}
+
+void PostgreSQLStatement::bindColumn(int index, Value value) {
+    this->bindColumnByIndex[index] = value;
 }
