@@ -15,10 +15,6 @@ public:
      */
     void bindColumn() override { }
     /**
-     * Binds a parameter to the specified variable name
-     */
-    void bindParam() override { }
-    /**
      * Binds a value to a parameter
      */
     void bindValue(int index, Value value) override ;
