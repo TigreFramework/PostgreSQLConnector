@@ -18,7 +18,7 @@ bool PostgreSQLStatement::execute(const Param &params) {
     if(!this->bindValueByName.empty() || !this->bindValueByIndex.empty()){
         throw PostgreSQLException("Do not use execute bind and bindValue at the same time.");
     }
-    this->sql = params.bind(this->sql);
+    this->sql = params.bind(this->sql, this);
     this->execute(this->sql);
 }
 
@@ -123,20 +123,3 @@ void PostgreSQLStatement::bindValue(std::string name, Value value) {
 std::string PostgreSQLStatement::quote(const std::string &value) {
     return "'" + value + "'";
 }
-/*
-
-std::string PostgreSQLStatement::valueToSting(Value value) {
-    std::string result;
-    if (value.isString()) {
-        result += std::string("'");
-        result += value.getString();
-        result += std::string("'");
-    } else if (value.isInteger()) {
-        result += std::to_string(value.getInteger());
-    } else if (value.isFloat()) {
-        result += std::to_string(value.getFloat());
-    } else if (value.isDouble()) {
-        result += std::to_string(value.getDouble());
-    }
-    return result;
-}*/
