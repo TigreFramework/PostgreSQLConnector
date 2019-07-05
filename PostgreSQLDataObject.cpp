@@ -1,4 +1,5 @@
 #include <libpq-fe.h>
+#include <TigreFramework/PostgreSQLConnector/Exceptions/PostgreSQLException.h>
 #include "PostgreSQLDataObject.h"
 #include "PostgreSQLStatement.h"
 
@@ -22,11 +23,27 @@ PostgreSQLDataObject::~PostgreSQLDataObject() {
 /**
  * Inicia uma transação
  */
-void PostgreSQLDataObject::beginTransaction() {}
+void PostgreSQLDataObject::beginTransaction() {
+    auto res = PQexec(this->connection, "BEGIN");
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        std::string error = std::string("BEGIN command failed: ")+PQerrorMessage(this->connection);
+        PQclear(res);
+        throw PostgreSQLException(error);
+    }
+    PQclear(res);
+}
 /**
  * Envia uma transação
  */
-void PostgreSQLDataObject::commit() {}
+void PostgreSQLDataObject::commit() {
+    auto res = PQexec(this->connection, "COMMIT");
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        std::string error = std::string("COMMIT command failed: ")+PQerrorMessage(this->connection);
+        PQclear(res);
+        throw PostgreSQLException(error);
+    }
+    PQclear(res);
+}
 /**
  * Fetch the SQLSTATE associated with the last operation on the database handle
  */
@@ -79,7 +96,15 @@ void PostgreSQLDataObject::quote() {}
 /**
  * Rolls back a transaction
  */
-void PostgreSQLDataObject::rollBack() {}
+void PostgreSQLDataObject::rollBack() {
+    auto res = PQexec(this->connection, "ROLLBACK");
+    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+        std::string error = std::string("ROLLBACK command failed: ")+PQerrorMessage(this->connection);
+        PQclear(res);
+        throw PostgreSQLException(error);
+    }
+    PQclear(res);
+}
 /**
  * Set an attribute
  */
