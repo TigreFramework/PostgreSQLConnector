@@ -92,7 +92,9 @@ void PostgreSQLDataObject::query() {}
 /**
  * Quotes a string for use in a query
  */
-void PostgreSQLDataObject::quote() {}
+std::string PostgreSQLDataObject::quote(const std::string& value) {
+    return "'" + value + "'";
+}
 /**
  * Rolls back a transaction
  */

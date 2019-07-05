@@ -72,7 +72,7 @@ public:
     /**
      * Quotes a string for use in a query
      */
-    void quote();
+    std::string quote(const std::string& value);
     /**
      * Rolls back a transaction
      */

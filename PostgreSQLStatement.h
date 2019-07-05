@@ -70,7 +70,10 @@ public:
      * Returns the number of rows affected by the last SQL statement
      */
     int rowCount() override ;
-
+    /**
+     * Quotes a string for use in a query
+     */
+    std::string quote(const std::string& value) override ;
 private:
     PGconn * connection;
     PGresult * res = nullptr;

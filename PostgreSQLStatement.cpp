@@ -118,7 +118,12 @@ void PostgreSQLStatement::bindValue(int index, Value value) {
 
 void PostgreSQLStatement::bindValue(std::string name, Value value) {
     this->bindValueByName[name] = value;
-}/*
+}
+
+std::string PostgreSQLStatement::quote(const std::string &value) {
+    return "'" + value + "'";
+}
+/*
 
 std::string PostgreSQLStatement::valueToSting(Value value) {
     std::string result;
